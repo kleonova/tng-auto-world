@@ -1,1 +1,58 @@
 @import "bootstrap";
+
+main {
+    display: flex;
+
+    @media (max-width: 992px) {
+        flex-direction: column;
+    }
+
+    @media (min-width: 992px) {
+        flex-direction: row;
+        align-items: stretch;
+        min-height: calc(100vh - 56px);
+    }
+}
+
+aside {
+    padding: 8px 0;
+
+    @media (max-width: 992px) {
+        border-bottom: 1px solid $gray-200;
+    }
+
+    @media (min-width: 992px) {
+        width: 260px;
+        border-right: 1px solid $gray-200;
+    }
+}
+
+section.showcase {
+    display: grid;
+    gap: 12px;
+    grid-auto-rows: minmax(100px, auto);
+    padding: 8px;
+
+    @media (max-width: 992px) {
+        grid-template-columns: repeat(1, auto);
+        padding: 8px 0;
+    }    
+
+    @media (min-width: 992px) {        
+        grid-template-columns: repeat(2, 1fr);        
+    }
+
+    @media (min-width: 1400px) {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.cars-card {
+    @media (max-width: 992px) {
+        wigth: 100%
+    }
+
+    @media (min-width: 992px) {
+        width: 320px;
+    }
+}

@@ -7,7 +7,7 @@ services:
       - ./:/var/www
       - ./docker/nginx/conf.d:/etc/nginx/conf.d
     ports:
-      - 8877:80
+      - 8878:80
     depends_on:
       - app
     container_name: tng_auto_world_nginx
@@ -31,6 +31,6 @@ services:
         MYSQL_DATABASE: tng_auto_world
         MYSQL_ROOT_PASSWORD: root
     ports:
-      - 8102:3306
+      - 8103:3306
     command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci
     container_name: tng_auto_world_db
