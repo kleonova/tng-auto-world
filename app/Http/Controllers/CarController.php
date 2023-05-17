@@ -13,7 +13,7 @@ class CarController extends Controller
     public function index()
     {
         $cars = Car::all();
-        return view('cars.index', ['cars' => $cars]);
+        return view('cars.index', compact('cars'));
     }
 
     /**
@@ -59,9 +59,9 @@ class CarController extends Controller
      */
     public function update(CarRequest $request, string $id)
     {
-        // todo add handler files 
         $car = Car::withTrashed()->findOrFail($id);
-        $car -> update($request->validate());
+        // todo add handler files 
+        $car->update(array_merge($request->validated(), ['avatar' => $car->avatar]));
         // todo return back ?
         return redirect()->route('cars.show', ['car' => $car->id]);
     }
