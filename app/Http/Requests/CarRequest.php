@@ -21,12 +21,15 @@ class CarRequest extends FormRequest
      */
     public function rules(): array
     {
+        $options = require config_path('carbodystyles.php');
+        $optionKeys=array_keys($options);
         return [
             'brand' => 'required|min:3|max:100',
-            'model' => 'required|min:3|max:100',
+            'model' => 'required|min:3|max:100|unique:cars,model,'.$this->car,
             'price' => 'required|integer|multiple_of:1000',
             'created_year' => 'required|digits:4|integer|min:1900|max:'.(date('Y')+1),
-            'avatar' => 'file'
+            'body_style' => 'required|in:' . implode(',', $optionKeys),
+            'avatar' => 'sometimes|required|file'
         ];
     }
 
@@ -38,6 +41,7 @@ class CarRequest extends FormRequest
             'price' => 'Цена',
             'created_year' => 'Год выпуска',
             'avatar' => 'Изображение',
+            'body_style' => 'Тип кузова',
         ];
     }
 }

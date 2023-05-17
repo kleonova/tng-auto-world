@@ -21,7 +21,8 @@ class CarController extends Controller
      */
     public function create()
     {
-        return view('cars.create');
+        $options = require config_path('carbodystyles.php');
+        return view('cars.create')->with('options', $options);;
     }
 
     /**
@@ -29,8 +30,13 @@ class CarController extends Controller
      */
     public function store(CarRequest $request)
     {
-        $fileName = time().'.'.$request->avatar->extension();         
-        $request->avatar->move(public_path('uploads/cars'), $fileName);
+        // dd($request);
+        if ($request?->avatar) {
+            $fileName = time().'.'.$request->avatar->extension();         
+            $request->avatar->move(public_path('uploads/cars'), $fileName);
+        } else {
+            $fileName = 'default.jpg';
+        }
 
         $car = Car::create(array_merge($request->validated(), ['avatar' => $fileName]));
         return redirect()->route('cars.show', ['car' => $car->id]);
@@ -51,7 +57,8 @@ class CarController extends Controller
     public function edit(string $id)
     {
         $car = Car::withTrashed()->findOrFail($id);
-        return view('cars.edit', ['car' => $car]);
+        $options = require config_path('carbodystyles.php');
+        return view('cars.edit', ['car' => $car, 'options' => $options]);
     }
 
     /**

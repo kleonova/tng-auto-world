@@ -18,6 +18,7 @@
         <x-form.input label="Model" name="model" placeholder="Enter model..." value="{{ $car->model }}" class="mb-4" />
         <x-form.input label="Price" name="price" placeholder="Enter price..." value="{{ $car->price }}" class="mb-4" />
         <x-form.input label="Year" name="created_year" placeholder="1913" value="{{ $car->created_year }}" class="mb-4"/>
+        <x-form.select label="Body style" name="body_style" :options="$options" value="{{ $car->body_style }}" placeholder="Choose body style..." class="mb-4" />
         
         <div class="text-right">
             <button class="btn btn-primary" type="submit">Save</button>                        

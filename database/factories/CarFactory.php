@@ -21,7 +21,8 @@ class CarFactory extends Factory
             'model' => fake()->words(1, true),
             'price' => fake()->randomNumber(5, true),
             'avatar' => 'default.jpg', 
-            'created_year' => fake()->year()
+            'created_year' => fake()->year(),
+            'body_style' => 1
         ];
     }
 }

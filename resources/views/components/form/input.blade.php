@@ -1,8 +1,8 @@
 @props([
-    'class',
-	'label',
+    'class' => '',
+	'label' => '',
 	'name',
-    'placeholder',
+    'placeholder' => '',
 	'value' => ''	
 ])
 
