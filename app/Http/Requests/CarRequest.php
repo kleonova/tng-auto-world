@@ -29,4 +29,15 @@ class CarRequest extends FormRequest
             'avatar' => 'file'
         ];
     }
+
+    public function attributes()
+    {
+        return [
+            'brand' => 'Марка',
+            'model' => 'Модель',
+            'price' => 'Цена',
+            'created_year' => 'Год выпуска',
+            'avatar' => 'Изображение',
+        ];
+    }
 }
