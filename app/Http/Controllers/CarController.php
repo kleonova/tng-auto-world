@@ -21,7 +21,7 @@ class CarController extends Controller
      */
     public function create()
     {
-        $options = require config_path('carbodystyles.php');
+        $options = config('app-cars.bodyStyles');
         return view('cars.create')->with('options', $options);;
     }
 
@@ -57,7 +57,7 @@ class CarController extends Controller
     public function edit(string $id)
     {
         $car = Car::withTrashed()->findOrFail($id);
-        $options = require config_path('carbodystyles.php');
+        $options = config('app-cars.bodyStyles');
         return view('cars.edit', ['car' => $car, 'options' => $options]);
     }
 
