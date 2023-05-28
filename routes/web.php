@@ -17,4 +17,10 @@ Route::get('/', function () {
     return redirect()->route('cars.index');
 });
 
+Route::controller(CarController::class)->group(function () {
+    Route::put('/cars/{car}/restore', 'restore')->name('cars.restore');
+    Route::get('/cars/trash', 'trash')->name('cars.trash');
+});
 Route::resource('cars', CarController::class);
+
+

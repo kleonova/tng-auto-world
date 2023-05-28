@@ -16,6 +16,7 @@ class Car extends Model
         'price',
         'avatar',
         'created_year',
-        'body_style'
+        'body_style',
+        'vin'
     ];
 }

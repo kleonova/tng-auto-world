@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\CarRequest;
+use App\Http\Requests\CarSaveRequest;
+use App\Http\Requests\CarUpdateRequest;
 use App\Models\Car;
 
 class CarController extends Controller
@@ -16,21 +17,26 @@ class CarController extends Controller
         return view('cars.index', compact('cars'));
     }
 
+    public function trash() {
+        $cars = Car::onlyTrashed()->get();
+        return view('cars.index', compact('cars'));
+    }
+
     /**
      * Show the form for creating a new resource.
      */
     public function create()
     {
         $options = config('app-cars.bodyStyles');
-        return view('cars.create')->with('options', $options);;
+
+        return view('cars.create', compact('options'));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(CarRequest $request)
+    public function store(CarSaveRequest $request)
     {
-        // dd($request);
         if ($request?->avatar) {
             $fileName = time().'.'.$request->avatar->extension();         
             $request->avatar->move(public_path('uploads/cars'), $fileName);
@@ -39,7 +45,8 @@ class CarController extends Controller
         }
 
         $car = Car::create(array_merge($request->validated(), ['avatar' => $fileName]));
-        return redirect()->route('cars.show', ['car' => $car->id]);
+
+        return redirect()->route('cars.show', ['car' => $car->id])->with('success', 'Car '.$car->brand.' '.$car->model.' has been created successfully');;
     }
 
     /**
@@ -48,6 +55,7 @@ class CarController extends Controller
     public function show(string $id)
     {
         $car = Car::withTrashed()->findOrFail($id);
+
         return view('cars.show', ['car' => $car]);
     }
 
@@ -58,19 +66,19 @@ class CarController extends Controller
     {
         $car = Car::withTrashed()->findOrFail($id);
         $options = config('app-cars.bodyStyles');
+
         return view('cars.edit', ['car' => $car, 'options' => $options]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(CarRequest $request, string $id)
+    public function update(CarUpdateRequest $request, string $id)
     {
         $car = Car::withTrashed()->findOrFail($id);
-        // todo add handler files 
         $car->update(array_merge($request->validated(), ['avatar' => $car->avatar]));
-        // todo return back ?
-        return redirect()->route('cars.show', ['car' => $car->id]);
+        
+        return redirect()->route('cars.show', ['car' => $car->id])->with('success', 'Car '.$car->brand.' '.$car->model.' has been updated successfully');
     }
 
     /**
@@ -79,6 +87,17 @@ class CarController extends Controller
     public function destroy(Car $car)
     {
         $car -> delete();
-        return redirect()->route('cars.index')->with('success', 'Car has been deleted successfully');
+
+        return redirect()->route('cars.index')->with('success', 'Car '.$car->brand.' '.$car->model.' has been deleted successfully');
+    }
+
+    /**
+     * Restore car.
+     */
+    public function restore(string $id)
+    {
+        $car = Car::withTrashed()->findOrFail($id);
+        $car->restore();
+        return redirect()->route('cars.trash')->with('success', 'Car '.$car->brand.' '.$car->model.' has been restored successfully');
     }
 }

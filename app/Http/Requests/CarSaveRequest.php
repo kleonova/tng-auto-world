@@ -2,9 +2,11 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Car;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
-class CarRequest extends FormRequest
+class CarSaveRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -17,19 +19,18 @@ class CarRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array|string>
      */
     public function rules(): array
     {
-        $options = require config_path('carbodystyles.php');
-        $optionKeys=array_keys($options);
+        $options = config('app-cars.bodyStyles');
+
         return [
-            'brand' => 'required|min:3|max:100',
-            'model' => 'required|min:3|max:100|unique:cars,model,'.$this->car,
+            'brand' => 'required|min:2|max:100',
+            'model' => 'required|min:2|max:100',
+            'vin' => [ 'required', 'min:4', 'max:14', $this->vinUniqueRule() ],
             'price' => 'required|integer|multiple_of:1000',
             'created_year' => 'required|digits:4|integer|min:1900|max:'.(date('Y')+1),
-            'body_style' => 'required|in:' . implode(',', $optionKeys),
-            'avatar' => 'sometimes|required|file'
+            'body_style' => [ 'required', Rule::in(array_keys($options)) ],
         ];
     }
 
@@ -38,10 +39,15 @@ class CarRequest extends FormRequest
         return [
             'brand' => 'Марка',
             'model' => 'Модель',
+            'vin' => 'VIN',
             'price' => 'Цена',
             'created_year' => 'Год выпуска',
             'avatar' => 'Изображение',
             'body_style' => 'Тип кузова',
         ];
+    }
+
+    protected function vinUniqueRule() {
+        return Rule::unique(Car::class, 'vin')->whereNull('deleted_at');
     }
 }

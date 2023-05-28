@@ -21,6 +21,13 @@
         </div>
     </main>
 
+    <div class="toast-wrapper">
+        @if ($message = Session::get('success'))
+            <x-toast message='{{ $message }}' />
+        @endif
+    </div>
+
+
     @vite(['resources/js/app.js'])
 </body>
 </html>

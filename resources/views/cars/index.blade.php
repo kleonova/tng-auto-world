@@ -8,7 +8,7 @@
         <a href="{{ route('cars.create') }}" class="btn btn-outline-secondary btn-sm me-1">Add car...</a>
     </div>
 @stop
- 
+
 @section('content')
     <section class="showcase">
         @foreach ($cars as $car)
@@ -19,6 +19,7 @@
                         <div class="">
                             <p class="fs-6 mb-0">{{ $car->brand }}</p>
                             <h5 class="card-title mb-0">{{ $car->model }}</h5>
+                            <p class="card-title mb-0">#{{ $car->vin }}</p>
                         </div>
                         <div>
                             <p class="fs-3 mb-0">{{ $car->created_year }}</p>
@@ -27,14 +28,25 @@
                     <div class="card-text mb-3">
                         <span class="fs-4">${{ $car->price }}</span>
                     </div>
+
+                    @if ($car->deleted_at)
+                        <form action="{{ route('cars.restore', $car->id) }}" method="post" class="d-flex justify-content-end align-items-end">
+                            @csrf
+                            @method('PUT')
+                            <button type="submit" class="btn btn-outline-danger btn-sm me-1">Restore</button>
+                            <a href="{{ route('cars.show', [ $car->id ]) }}" class="btn btn-primary btn-sm">Details...</a>
+                        </form>
+                    @else
+                        <form action="{{ route('cars.destroy', $car->id) }}" method="post" class="d-flex justify-content-end align-items-end">
+                            @csrf
+                            @method('DELETE')
+                            <a href="{{ route('cars.edit', [ $car->id ]) }}" class="btn btn-outline-secondary btn-sm me-1">Edit...</a>
+                            <button type="submit" class="btn btn-outline-secondary btn-sm me-1">Delete</button>
+                            <a href="{{ route('cars.show', [ $car->id ]) }}" class="btn btn-primary btn-sm">Details...</a>
+                        </form>
+                    @endif
                     
-                    <form action="{{ route('cars.destroy', $car->id) }}" method="post" class="d-flex justify-content-end align-items-end">
-                        @csrf
-                        @method('DELETE')
-                        <a href="{{ route('cars.edit', [ $car->id ]) }}" class="btn btn-outline-secondary btn-sm me-1">Edit...</a>
-                        <button type="submit" class="btn btn-outline-secondary btn-sm me-1">Delete</button>
-                        <a href="{{ route('cars.show', [ $car->id ]) }}" class="btn btn-primary btn-sm">Details...</a>
-                    </form>
+                    
                                        
                 </div>
             </div>
