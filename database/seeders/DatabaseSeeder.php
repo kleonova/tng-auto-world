@@ -24,5 +24,6 @@ class DatabaseSeeder extends Seeder
         }
         
         \App\Models\Car::factory(5)->create();       
+        \App\Models\Tag::factory(5)->create();       
     }
 }

@@ -24,4 +24,12 @@ class Car extends Model
     {
         return $this->belongsTo(Brand::class);
     }
+
+    /**
+     * The tags that belong to the car.
+     */
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class, 'car_tags');
+    }
 }

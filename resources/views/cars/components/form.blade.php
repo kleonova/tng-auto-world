@@ -21,3 +21,7 @@
 <div class="mb-3">
     <x-form-select name="transmission" :options="$transmissions" label="Transmission" placeholder="Choose transmission..." />
 </div>
+
+<div class="mb-3">
+    <x-form-select name="tags[]" :options="$tags" label="Tags" placeholder="Choose tag..." multiple :default="isset($defaultTags) ? $defaultTags : []" />
+</div>

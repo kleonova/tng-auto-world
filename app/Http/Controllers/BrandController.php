@@ -31,7 +31,7 @@ class BrandController extends Controller
     public function store(StoreBrandRequest $request)
     {
         $brand = Brand::create($request->validated());
-        return redirect()->route('brands.index')->with('alert', trans('app-brands-alert.brands.created', ['name' => $brand->title]));        
+        return redirect()->route('brands.index')->with('alert', trans('app-cars-alert.brands.created', ['name' => $brand->title]));        
     }
 
     /**
@@ -64,6 +64,6 @@ class BrandController extends Controller
     public function destroy(Brand $brand)
     {
         $brand -> delete();
-        return redirect()->route('brands.index')->with('alert', trans('app-brands-alert.brands.deleted', ['name' => $brand->title]));
+        return redirect()->route('brands.index')->with('alert', trans('app-cars-alert.brands.deleted', ['name' => $brand->title]));
     }
 }

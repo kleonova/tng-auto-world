@@ -18,13 +18,22 @@
         <dd class="col-sm-9">{{ $car->vin }}</dd>
 
         <dt class="col-sm-3">Transmission</dt>
-        <dd class="col-sm-9">{{ $car->transmission }}</dd>
+        <dd class="col-sm-9">{{ $transmissions[$car->transmission] }}</dd>
 
         <dt class="col-sm-3">Year</dt>
         <dd class="col-sm-9">{{ $car->created_year }}</dd>
 
         <dt class="col-sm-3">Price</dt>
         <dd class="col-sm-9">{{ $car->price }}</dd>
+
+        <dt class="col-sm-3">Tags</dt>
+        <dd class="col-sm-9">
+            <ul>
+                @foreach ($car->tags as $tag)
+                    <li>{{ $tag->title }}</li>
+                @endforeach
+            </ul>
+        </dd>
     </dl>
 
     <div class="">

@@ -6,6 +6,7 @@ use App\Http\Requests\CarSaveRequest;
 use App\Http\Requests\CarUpdateRequest;
 use App\Models\Car;
 use App\Models\Brand;
+use App\Models\Tag;
 
 class CarController extends Controller
 {
@@ -35,7 +36,9 @@ class CarController extends Controller
     {
         $transmissions = config('app-cars.transmissions');
         $brands = Brand::orderBy('title')->pluck('title', 'id');
-        return view('cars.create', compact('transmissions', 'brands'));
+        $tags = Tag::orderBy('title')->pluck('title', 'id');
+
+        return view('cars.create', compact('transmissions', 'brands', 'tags'));
     }
 
     /**
@@ -43,8 +46,9 @@ class CarController extends Controller
      */
     public function store(CarSaveRequest $request)
     {
-        // dd($request);
+        $tags = $request->tags;
         $car = Car::create($request->validated());
+        $car->tags()->sync($tags);
 
         return redirect()->route('cars.show', ['car' => $car->id])->with('alert', trans('app-cars-alert.cars.created', ['name' => $car->brand->title.' '.$car->model]));
     }
@@ -55,7 +59,9 @@ class CarController extends Controller
     public function show(string $id)
     {
         $car = Car::withTrashed()->findOrFail($id);
-        return view('cars.show', ['car' => $car]);
+        $transmissions = config('app-cars.transmissions');
+        
+        return view('cars.show', compact('transmissions', 'car'));
     }
 
     /**
@@ -66,8 +72,10 @@ class CarController extends Controller
         $car = Car::withTrashed()->findOrFail($id);
         $transmissions = config('app-cars.transmissions');
         $brands = Brand::orderBy('title')->pluck('title', 'id');
+        $tags = Tag::orderBy('title')->pluck('title', 'id');
+        $defaultTags = $car->tags()->pluck('tag_id');
 
-        return view('cars.edit', compact('car', 'transmissions', 'brands'));
+        return view('cars.edit', compact('car', 'transmissions', 'brands', 'tags', 'defaultTags'));
     }
 
     /**
@@ -77,6 +85,9 @@ class CarController extends Controller
     {
         $car = Car::withTrashed()->findOrFail($id);
         $car->update($request->validated());
+
+        $tags = $request->tags;
+        $car->tags()->sync($tags);
         
         return redirect()->route('cars.show', ['car' => $car->id])->with('alert', trans('app-cars-alert.cars.edited', ['name' => $car->brand->title.' '.$car->model]));
     }
