@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CarSaveRequest;
 use App\Http\Requests\CarUpdateRequest;
 use App\Models\Car;
+use App\Models\Brand;
 
 class CarController extends Controller
 {
@@ -13,13 +14,18 @@ class CarController extends Controller
      */
     public function index()
     {
-        $cars = Car::all();
-        return view('cars.index', compact('cars'));
+        $cars = Car::with('brand')->orderBy('created_at')->get();
+        $transmissions = config('app-cars.transmissions');
+        return view('cars.index', compact('cars', 'transmissions'));
     }
 
+    /**
+     * Display deleted cars.
+     */
     public function trash() {
-        $cars = Car::onlyTrashed()->get();
-        return view('cars.index', compact('cars'));
+        $cars = Car::with('brand')->onlyTrashed()->orderBy('deleted_at')->get();
+        $transmissions = config('app-cars.transmissions');
+        return view('cars.trash', compact('cars', 'transmissions'));
     }
 
     /**
@@ -27,9 +33,9 @@ class CarController extends Controller
      */
     public function create()
     {
-        $options = config('app-cars.bodyStyles');
-
-        return view('cars.create', compact('options'));
+        $transmissions = config('app-cars.transmissions');
+        $brands = Brand::orderBy('title')->pluck('title', 'id');
+        return view('cars.create', compact('transmissions', 'brands'));
     }
 
     /**
@@ -37,16 +43,10 @@ class CarController extends Controller
      */
     public function store(CarSaveRequest $request)
     {
-        if ($request?->avatar) {
-            $fileName = time().'.'.$request->avatar->extension();         
-            $request->avatar->move(public_path('uploads/cars'), $fileName);
-        } else {
-            $fileName = 'default.jpg';
-        }
+        // dd($request);
+        $car = Car::create($request->validated());
 
-        $car = Car::create(array_merge($request->validated(), ['avatar' => $fileName]));
-
-        return redirect()->route('cars.show', ['car' => $car->id])->with('success', 'Car '.$car->brand.' '.$car->model.' has been created successfully');;
+        return redirect()->route('cars.show', ['car' => $car->id])->with('alert', trans('app-cars-alert.cars.created', ['name' => $car->brand->title.' '.$car->model]));
     }
 
     /**
@@ -55,7 +55,6 @@ class CarController extends Controller
     public function show(string $id)
     {
         $car = Car::withTrashed()->findOrFail($id);
-
         return view('cars.show', ['car' => $car]);
     }
 
@@ -65,9 +64,10 @@ class CarController extends Controller
     public function edit(string $id)
     {
         $car = Car::withTrashed()->findOrFail($id);
-        $options = config('app-cars.bodyStyles');
+        $transmissions = config('app-cars.transmissions');
+        $brands = Brand::orderBy('title')->pluck('title', 'id');
 
-        return view('cars.edit', ['car' => $car, 'options' => $options]);
+        return view('cars.edit', compact('car', 'transmissions', 'brands'));
     }
 
     /**
@@ -76,9 +76,9 @@ class CarController extends Controller
     public function update(CarUpdateRequest $request, string $id)
     {
         $car = Car::withTrashed()->findOrFail($id);
-        $car->update(array_merge($request->validated(), ['avatar' => $car->avatar]));
+        $car->update($request->validated());
         
-        return redirect()->route('cars.show', ['car' => $car->id])->with('success', 'Car '.$car->brand.' '.$car->model.' has been updated successfully');
+        return redirect()->route('cars.show', ['car' => $car->id])->with('alert', trans('app-cars-alert.cars.edited', ['name' => $car->brand->title.' '.$car->model]));
     }
 
     /**
@@ -87,8 +87,7 @@ class CarController extends Controller
     public function destroy(Car $car)
     {
         $car -> delete();
-
-        return redirect()->route('cars.index')->with('success', 'Car '.$car->brand.' '.$car->model.' has been deleted successfully');
+        return redirect()->route('cars.index')->with('alert', trans('app-cars-alert.cars.deleted', ['name' => $car->brand->title.' '.$car->model]));
     }
 
     /**
@@ -97,7 +96,13 @@ class CarController extends Controller
     public function restore(string $id)
     {
         $car = Car::withTrashed()->findOrFail($id);
+        
+        if (Car::where('vin', $car->vin)->exists()) {
+            return redirect()->route('cars.trash')->with('alert', trans('app-cars-alert.cars.restore-fail-vin', ['vin' => $car->vin]));
+        }
+
         $car->restore();
-        return redirect()->route('cars.trash')->with('success', 'Car '.$car->brand.' '.$car->model.' has been restored successfully');
+        
+        return redirect()->route('cars.trash')->with('alert', trans('app-cars-alert.cars.restored', ['name' => $car->brand->title.' '.$car->model]));
     }
 }

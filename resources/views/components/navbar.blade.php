@@ -4,11 +4,14 @@
 
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
-            <li class="nav-item active">
+            <li class="nav-item {{ request()->is('cars') ? 'active' : '' }}">
                 <a href="{{ route('cars.index') }}" class="nav-link">Catalog</a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item {{ request()->is('cars/trash') ? 'active' : '' }}">
                 <a href="{{ route('cars.trash') }}" class="nav-link">Trash</a>
+            </li>
+            <li class="nav-item {{ request()->is('brands') ? 'active' : '' }}">
+                <a href="{{ route('brands.index') }}" class="nav-link">Brands</a>
             </li>
         </ul>
     </div>

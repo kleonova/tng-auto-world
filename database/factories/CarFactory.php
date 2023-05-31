@@ -17,12 +17,12 @@ class CarFactory extends Factory
     public function definition(): array
     {
         return [
-            'brand' => 'Toyota',
+            'brand_id' => fake()->numberBetween(1, 4),
             'model' => fake()->words(1, true),
+            'vin' => fake()->unique()->randomNumber(5, true),
             'price' => fake()->randomNumber(5, true),
-            'avatar' => 'default.jpg', 
+            'transmission' => fake()->numberBetween(1, 3),
             'created_year' => fake()->year(),
-            'body_style' => 1
         ];
     }
 }

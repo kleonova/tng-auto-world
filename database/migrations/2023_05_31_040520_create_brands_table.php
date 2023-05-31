@@ -11,8 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('cars', function(Blueprint $table) {
-            $table->tinyInteger('body_style')->default(1);
+        Schema::create('brands', function (Blueprint $table) {
+            $table->id();
+            $table->string('title');
+            $table->string('description')->nullable();;
+            $table->softDeletes();
+            $table->timestamps();
         });
     }
 
@@ -21,8 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('cars', function($table) {
-            $table->dropColumn('body_style');
-        });
+        Schema::dropIfExists('brands');
     }
 };

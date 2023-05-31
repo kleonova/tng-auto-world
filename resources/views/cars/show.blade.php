@@ -7,33 +7,36 @@
 @stop
  
 @section('content')
+    <dl class="row">
+        <dt class="col-sm-3">Brand</dt>
+        <dd class="col-sm-9">{{ $car->brand->title }}</dd>
+
+        <dt class="col-sm-3">Model</dt>
+        <dd class="col-sm-9">{{ $car->model }}</dd>
+
+        <dt class="col-sm-3">Vin number</dt>
+        <dd class="col-sm-9">{{ $car->vin }}</dd>
+
+        <dt class="col-sm-3">Transmission</dt>
+        <dd class="col-sm-9">{{ $car->transmission }}</dd>
+
+        <dt class="col-sm-3">Year</dt>
+        <dd class="col-sm-9">{{ $car->created_year }}</dd>
+
+        <dt class="col-sm-3">Price</dt>
+        <dd class="col-sm-9">{{ $car->price }}</dd>
+    </dl>
+
     <div class="">
-        <img src="../uploads/cars/{{ $car->avatar }}" class="card-img-top" alt="{{ $car->model }}">
-        <div class="">
-            <div class="d-flex align-items-center justify-content-between mb-2">
-                <div class="">
-                    <p class="fs-6 mb-0">{{ $car->brand }}</p>
-                    <h5 class="card-title mb-0">{{ $car->model }}</h5>
-                </div>
-                <div>
-                    <p class="fs-3 mb-0">{{ $car->created_year }}</p>
-                </div>
-            </div>                        
-            <div class="card-text mb-3">
-                <span class="fs-4">${{ $car->price }}</span>
-            </div>
-            
-            @if (!$car->deleted_at)
-                <form action="{{ route('cars.destroy', $car->id) }}" method="post" class="d-flex justify-content-end align-items-end">
-                    @csrf
-                    @method('DELETE')
-                    <a href="{{ route('cars.edit', [ $car->id ]) }}" class="btn btn-outline-secondary btn-sm me-1">Edit...</a>
-                    <button type="submit" class="btn btn-outline-secondary btn-sm me-1">Delete</button>
-                </form>  
-            @else
-                <span class="text-danger">Car was deleted. I should think about restore...</span>
-            @endif
-                              
-        </div>
+        @if (!$car->deleted_at)
+            <form action="{{ route('cars.destroy', $car->id) }}" method="post" class="d-flex justify-content-start align-items-end">
+                @csrf
+                @method('DELETE')
+                <a href="{{ route('cars.edit', [ $car->id ]) }}" class="btn btn-outline-secondary btn-sm me-1">Edit...</a>
+                <button type="submit" class="btn btn-outline-secondary btn-sm me-1">Delete</button>
+            </form>  
+        @else
+            <span class="text-danger">Car was deleted. I should think about restore...</span>
+        @endif
     </div>
 @stop

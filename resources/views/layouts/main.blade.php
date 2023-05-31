@@ -22,7 +22,7 @@
     </main>
 
     <div class="toast-wrapper">
-        @if ($message = Session::get('success'))
+        @if ($message = Session::get('alert'))
             <x-toast message='{{ $message }}' />
         @endif
     </div>

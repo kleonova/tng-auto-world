@@ -4,6 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
+use App\Models\Brand;
+
 return new class extends Migration
 {
     /**
@@ -13,10 +15,11 @@ return new class extends Migration
     {
         Schema::create('cars', function (Blueprint $table) {
             $table->id();
-            $table->string('brand');
+            $table->foreignIdFor(Brand::class)->constrained();
             $table->string('model');
+            $table->string('vin')->afrer('model');
             $table->integer('price');
-            $table->string('avatar')->default('img/car/default.jpg');
+            $table->tinyInteger('transmission')->default(1);
             $table->year('created_year');
             $table->softDeletes();
             $table->timestamps();
