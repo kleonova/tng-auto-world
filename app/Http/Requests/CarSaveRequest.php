@@ -31,7 +31,8 @@ class CarSaveRequest extends FormRequest
             'price' => 'required|integer|multiple_of:1000',
             'created_year' => 'required|digits:4|integer|min:1900|max:'.(date('Y')+1),
             'transmission' => [ 'required', Rule::in(array_keys($transmissions)) ],
-            'tags' => 'sometimes|array'
+            'tags' => 'sometimes|array', 
+            'tags.*' => 'integer|exists:tags,id'
         ];
     }
 
